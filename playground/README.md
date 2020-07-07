@@ -53,5 +53,28 @@ Ugh, it's too integrated into the code. It's everywhere. In constructors. etc.
 
 #### DEAD END
 
-Maybe I should go back to tryign to get ezsp to import correctly. If I could do that, I might be able to get this working with the $50 zigbee attachment from the same vendor as the one in the bridge.
+Maybe I should go back to trying to get ezsp to import correctly. If I could do that, I might be able to get this working with the $50 zigbee attachment from the same vendor as the one in the bridge.
 
+______
+
+2020-07-06, 11pm. back at it.
+
+Aha! I didn't have `_ezsp.so` in the `playground` directory. Moving it there changed the error from
+
+`ImportError: No module named _ezsp`
+
+to
+
+`ImportError: ./_ezsp.so: cannot open shared object file: No such file or directory`
+
+which is weird, b/c the file is now there. Maybe the permissions are wrong? (nope, they're 755.)
+
+Per [this stackoverflow Q](https://stackoverflow.com/questions/1099981/why-cant-python-find-shared-objects-that-are-in-directories-in-sys-path), I tried setting LD_LIBRARY_PATH and/or updating `/etc/ld.so.conf` and then running `ldconfig`, but that didn't help. Changed them back.
+
+Man, every answser on the internet to this question says it's something about the LD_LIBRARY_PATH and the linker not knowing where to look, so I must be close. :/
+
+TODO: Read more about [linux shared libraries](http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html)
+
+______
+
+(note to self: I probably need to have python and/or the system looking at the proper lib directory, since ezsp probably won't be the only linking error)
